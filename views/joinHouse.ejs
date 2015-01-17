@@ -28,6 +28,11 @@
     </form>
 
     <p>Create a new house. (You will become the house captain)</p>
+      <div class="col-sm-offset-2 col-sm-10">
+          <% if (message) { %>
+        <p style="color:red"><%=message%></p> 
+      <% } %>
+      </div> 
     <form class="form-horizontal" action="/newHouse" method = "POST">
       <div class="form-group">
         <label for="houseName" class="col-sm-2 control-label">House name</label>

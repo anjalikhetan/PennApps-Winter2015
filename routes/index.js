@@ -33,6 +33,7 @@ exports.validate = function(req, res) {
 			users.get(userID, function(err, value) {
 				var jsonvalue = JSON.parse(value);
 				if (jsonvalue.password === sha1(req.body.password)) {
+					req.session.number = req.body.inputPhoneNumber;
 					res.redirect('home');
 				} else {
 					res.render('signin', {message: "Incorrect password, please try again."});
@@ -56,16 +57,17 @@ exports.createAccount = function(req, res) {
 			//New Phone Number
 			console.log("This phone number is new to the table.");
 			if (req.body.password1 === req.body.password2) {
+
 				//The passwords do match
 				var json = {phoneNumber: userID, 
 						password: sha1(req.body.password1)};
 				 /*Need to update the value object*/
-				 console.log("passing var creation");
 
 				users.put(userID, JSON.stringify(json), "0", function(err, data) {
 					console.log(err);
 					console.log("i'm putting " + userID + " " + JSON.stringify(json));
 				});
+				req.session.number = req.body.inputPhoneNumber;
 				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
 			} else {
 				res.render('signup', {message: "Passwords do not match. Please try again."});
@@ -93,7 +95,7 @@ exports.success = function(req, res) {
    			 console.log(body) // Print the google web page.
 	    }
 	});
-	res.redirect('joinHouse');
+	res.redirect('joinHouse', {message: null});
 }
 
 exports.joinHouse = function(req, res) {
@@ -106,13 +108,29 @@ exports.joinExisting = function(req, res) {
 			res.render('joinHouse', {message: "The house name you entered does not exist. Please try again or create a new house."});
 		} else {
 			houses.get(req.body.existingHouse, function(err,value) {
+
 				res.redirect('home');
-			})
+			});
 		}
-	})
+	});
 }
 
 exports.newHouse = function(req, res) {
+	houses.exists(req.body.newHouse, function(err,data) {
+		if (!data) {
+			res.render('joinHouse', {message: "The house name you entered already exists. Please create a new name or join that house."});
+		} else {
+			var json = {housename: req.body.newName,
+						address: req.body.address,
+						captainNumber: req.session.number,
+						members: req.session.number};
+
+			houses.put(req.body.newHouse, JSON.stringify(json), "0", function(err,value) {
+				
+				res.redirect('home');
+			});
+		}
+	});
 	//do this after the new house is successfully created in the table
 	res.render('home');
 }
