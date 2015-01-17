@@ -12,17 +12,23 @@ exports.init = function(usrs, callback) {
 	callback();
 }
 exports.signup = function(req, res) {
-	// check database for existing username
-	// if username doesn't exist
 	res.render('signup', {message: null});
-	// else
-	// res.render('signup', {message: "Username exists, choose another"});
 }
+
 exports.signin = function(req, res) {
 	res.render('signin');
 }
 
 exports.createAccount = function(req, res) {
+	// check database for existing username
+	// if username doesn't exist
+	var userID = req.body.inputPhoneNumber;
+	users.exists(userID, function(err, data) {
+		if (data) {
+			res.render('signup', {message: "Username exists, choose another"});
+		} else {
+			res.render('home');
+		}
 
-	res.render('home');
+	});
 }
