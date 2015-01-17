@@ -6,22 +6,8 @@
   </head>
   <body>
     <h1>Verify your Venmo credentials</h1>
-    {{#message}}
-      <h3>{{message}}</h3>
-    {{/message}}
-    <p>Welcome to the GroupMe dashboard!</p>
-    {{#venmoUser}}
-      <p>Authenticated as {{display_name}} ({{username}})</p>
-    
-      <p>:</p>
-      <form action='/venmo/send' method='post'>
-        Pay $<input type='text' name='amount' placeholder='Amount in dollars'> to <input type='text' name='phone' placeholder='Phone Number'> for:<br/>
-        <textarea name='note' rows='3' cols='80' placeholder='For...'></textarea><br/>
-        <input type='submit' name='Send Payment'>
-      </form>
-    {{/venmoUser}}
-    {{^venmoUser}}
-      <p>You have not authorized yet. <a href='authorize'>Click here</a> to authorize with Venmo.</p>
-    {{/venmoUser}}
+    <p> <a href="https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=token"> Verify. </a> </p>
   </body>
+
+  <!--https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=token-->
 </html>
