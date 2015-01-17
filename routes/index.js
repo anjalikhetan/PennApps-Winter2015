@@ -19,4 +19,7 @@ exports.signin = function(req, res) {
 	res.render('signin');
 }
 
-exports.createAccount()
+exports.createAccount = function(req, res) {
+
+	res.render('home');
+}
