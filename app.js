@@ -23,6 +23,7 @@ app.use(session({secret: 'hardingm',
 
 routes.init(function() {
 	app.get( '/', routes.index );
+	app.get('/signin', routes.signin);
 
 	http.createServer( app ).listen( app.get( 'port' ), function(){
 		console.log( 'Open browser to http://localhost:' + app.get( 'port' ));

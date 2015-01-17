@@ -11,3 +11,6 @@ exports.init = function(callback) {
 exports.index = function(req, res) {
 	res.render('signup');
 }
+exports.signin = function(req, res) {
+	res.render('signin');
+}
