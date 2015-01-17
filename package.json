@@ -21,7 +21,8 @@
     "express-session": "^1.9.3",
 		"aws-sdk": "*",
 		"lru-cache": "2.5.x",
-    "sha1": "1.x"
+    "sha1": "1.x",
+    "request": "2.51.0"
 	},
   "author": "",
   "license": "MIT",

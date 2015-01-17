@@ -9,6 +9,7 @@ var users;
 
 // SHA-1 encryption
 var sha1 = require('sha1');
+var request = require('request');
 
 exports.init = function(usrs, callback) {
 	users = usrs;
@@ -77,4 +78,13 @@ exports.home = function(req, res) {
 
 exports.venmoVerify = function(req, res) {
 	res.render('venmoVerify');
+}
+
+exports.success = function(req, res) {
+	request("https://api.venmo.com/v1/oauth/access_token", function (error, response, body) {
+  		if (!error && response.statusCode == 200) {
+   			 console.log(body) // Print the google web page.
+	    }
+	});
+	res.redirect('home');
 }
