@@ -27,6 +27,11 @@
           <input type="password" name="password" class="form-control" id="inputPassword1" placeholder="Password">
         </div>
       </div> <!--User enters password-->
+      <div class="col-sm-offset-2 col-sm-10">
+          <% if (message) { %>
+        <p style="color:red"><%=message%></p> 
+      <% } %>
+      </div> 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-default">Sign in</button>
@@ -34,10 +39,6 @@
       </div>
     </form>
   </div> <!-- /container -->
-   <% if (message) { %>
-        <p style="color:red"><%=message%></p> 
-      <% } %>
-  </center>
 
     <!-- Le javascript
     ================================================== -->
