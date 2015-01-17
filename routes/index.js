@@ -193,5 +193,13 @@ exports.addSupplies = function(req, res) {
 }
 
 exports.checkoff = function(req, res) {
-
+	houses.get(req.session.house, function(err, value) {
+		var JSONvalue = JSON.parse(value);
+		console.log(req.body.item);
+		var index = JSONvalue.supplies.indexOf(req.body.item);
+		JSONvalue.supplies.splice(index,1);
+		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
+			res.redirect('home');
+		});	
+	});
 }
