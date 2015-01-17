@@ -16,7 +16,18 @@ exports.signup = function(req, res) {
 }
 
 exports.signin = function(req, res) {
-	res.render('signin');
+	res.render('signin', {message: null});
+}
+
+exports.validate = function(req, res) {
+	var userID = req.body.inputPhoneNumber;
+	users.exists(userID, function(err, data) {
+		if (data) {
+			//check to see if req.body.password matches the hashed password in the JSON obj.
+		} else {
+			res.render('signin', {message: "Username does not exist. Please sign up or try again."});
+		}
+	});
 }
 
 exports.createAccount = function(req, res) {
@@ -37,7 +48,7 @@ exports.createAccount = function(req, res) {
 				console.log(err);
 				console.log("i'm putting " + userID + " " + JSON.stringify(json));
 			});
-			res.render('home');
+			res.render('venmoVerify');
 		}
 
 	});
