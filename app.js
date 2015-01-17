@@ -21,12 +21,18 @@ app.use(session({secret: 'hardingm',
                 resave: true}
 ));
 
-routes.init(function() {
-	app.get( '/', routes.signup);
-	app.get('/signin', routes.signin);
-	app.post('/createAccount', routes.createAccount);
+var aws = require("./keyvaluestore.js");
 
-	http.createServer( app ).listen( app.get( 'port' ), function(){
-		console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
-	} );
+var users = new aws('PAusers');
+
+users.init(function() {
+	routes.init(users, function() {
+		app.get( '/', routes.signup);
+		app.get('/signin', routes.signin);
+		app.post('/createAccount', routes.createAccount);
+
+		http.createServer( app ).listen( app.get( 'port' ), function(){
+			console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
+		});
+	});
 });

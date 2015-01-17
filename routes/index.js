@@ -2,10 +2,13 @@
  * Main Web route handling
  */
 
+// our tables
+var users;
 // We export the init() function to initialize
 // our KVS values
 
-exports.init = function(callback) {
+exports.init = function(usrs, callback) {
+	users = usrs;
 	callback();
 }
 exports.signup = function(req, res) {
