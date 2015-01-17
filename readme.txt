@@ -1,3 +1,3 @@
 readme.txt
 
-PennApps
+PennApps Winter 2015 project by students Mark Harding and Anjali Khetan.
