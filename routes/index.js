@@ -4,6 +4,7 @@
 
 // our tables
 var users;
+var houses
 // We export the init() function to initialize
 // our KVS values
 
@@ -12,7 +13,8 @@ var sha1 = require('sha1');
 var request = require('request');
 var venmoCredentials = require('../config2');
 
-exports.init = function(usrs, callback) {
+exports.init = function(usrs, hses, callback) {
+	houses = hses;
 	users = usrs;
 	callback();
 }
@@ -77,10 +79,6 @@ exports.home = function(req, res) {
 	res.render('home');
 }
 
-exports.venmoVerify = function(req, res) {
-	res.render('venmoVerify');
-}
-
 exports.success = function(req, res) {
 	console.log("req.query.code = " + req.query.code);
 	request.post({
@@ -95,5 +93,33 @@ exports.success = function(req, res) {
    			 console.log(body) // Print the google web page.
 	    }
 	});
-	res.redirect('home');
+	res.redirect('joinHouse');
+}
+
+exports.joinHouse = function(req, res) {
+	res.render('joinHouse', {message: null});
+}
+
+exports.joinExisting = function(req, res) {
+	houses.exists(req.body.existingHouse, function(err,data) {
+		if (!data) {
+			res.render('joinHouse', {message: "The house name you entered does not exist. Please try again or create a new house."});
+		} else {
+			houses.get(req.body.existingHouse, function(err,value) {
+				res.redirect('home');
+			})
+		}
+	})
+}
+
+exports.newHouse = function(req, res) {
+	//do this after the new house is successfully created in the table
+	res.render('home');
+}
+exports.addSupplies = function(req, res) {
+
+}
+
+exports.checkoff = function(req, res) {
+
 }
