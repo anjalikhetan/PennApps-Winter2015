@@ -32,6 +32,7 @@ users.init(function() {
 		app.post('/createAccount', routes.createAccount);
 		app.get('/venmoverify', routes.venmoVerify);
 		app.post('/validate', routes.validate);
+		app.get('/home', routes.home);
 		http.createServer( app ).listen( app.get( 'port' ), function(){
 			console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
 		});

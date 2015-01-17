@@ -26,6 +26,14 @@ exports.validate = function(req, res) {
 	var userID = req.body.inputPhoneNumber;
 	users.exists(userID, function(err, data) {
 		if (data) {
+			users.get(userID, function(err, value) {
+				var jsonvalue = JSON.parse(value);
+				if (jsonvalue.password === sha1(req.body.password)) {
+					res.redirect('home');
+				} else {
+					res.render('signin', {message: "Incorrect password, please try again."});
+				}
+			})
 			//check to see if req.body.password matches the hashed password in the JSON obj.
 		} else {
 			res.render('signin', {message: "Username does not exist. Please sign up or try again."});
@@ -63,6 +71,9 @@ exports.createAccount = function(req, res) {
 	});
 }
 
+exports.home = function(req, res) {
+	res.render('home');
+}
 
 exports.venmoVerify = function(req, res) {
 	res.render('venmoVerify');
