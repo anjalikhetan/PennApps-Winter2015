@@ -38,20 +38,26 @@ exports.createAccount = function(req, res) {
 	var userID = req.body.inputPhoneNumber;
 	console.log("userID = " + userID);
 	users.exists(userID, function(err, data) {
-
 		if (data) {
 			res.render('signup', {message: "Username already exists, please choose another."});
 		} else {
+			//New Phone Number
 			console.log("This phone number is new to the table.");
-			var json = {phoneNumber: userID};
-			 /*Need to update the value object*/
-			 console.log("passing var creation");
+			if (req.body.password1 === req.body.password2) {
+				//The passwords do match
+				var json = {phoneNumber: userID, 
+						password: sha1(req.body.password1)};
+				 /*Need to update the value object*/
+				 console.log("passing var creation");
 
-			users.put(userID, JSON.stringify(json), "0", function(err, data) {
-				console.log(err);
-				console.log("i'm putting " + userID + " " + JSON.stringify(json));
-			});
-			res.render('venmoVerify');
+				users.put(userID, JSON.stringify(json), "0", function(err, data) {
+					console.log(err);
+					console.log("i'm putting " + userID + " " + JSON.stringify(json));
+				});
+				res.render('venmoVerify');
+			} else {
+				res.render('signup', {message: "Passwords do not match. Please try again."});
+			}
 		}
 
 	});
