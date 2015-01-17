@@ -7,6 +7,9 @@ var users;
 // We export the init() function to initialize
 // our KVS values
 
+// SHA-1 encryption
+var sha1 = require('sha1');
+
 exports.init = function(usrs, callback) {
 	users = usrs;
 	callback();
