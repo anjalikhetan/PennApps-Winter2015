@@ -22,7 +22,7 @@ app.use(session({secret: 'hardingm',
 ));
 
 routes.init(function() {
-	app.get( '/', routes.signup );
+	app.get( '/', routes.signup);
 	app.get('/signin', routes.signin);
 	app.post('/createAccount', routes.createAccount);
 
