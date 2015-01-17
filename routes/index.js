@@ -10,6 +10,7 @@ var users;
 // SHA-1 encryption
 var sha1 = require('sha1');
 var request = require('request');
+var venmoCredentials = require('../config2');
 
 exports.init = function(usrs, callback) {
 	users = usrs;
@@ -81,7 +82,15 @@ exports.venmoVerify = function(req, res) {
 }
 
 exports.success = function(req, res) {
-	request("https://api.venmo.com/v1/oauth/access_token", function (error, response, body) {
+	console.log("req.query.code = " + req.query.code);
+	request.post({
+		url: "https://api.venmo.com/v1/oauth/access_token", 
+		form: {"client_id": venmoCredentials.ID,
+	   		   "client_secret": venmoCredentials.Secret,
+	    	   "code": req.query.code
+			  }
+	}, function (error, response, body) {
+  		console.log("response.statusCode = " + response.statusCode);
   		if (!error && response.statusCode == 200) {
    			 console.log(body) // Print the google web page.
 	    }

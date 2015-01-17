@@ -33,7 +33,7 @@ users.init(function() {
 		app.get('/venmoverify', routes.venmoVerify);
 		app.post('/validate', routes.validate);
 		app.get('/home', routes.home);
-		app.post('/success', routes.success);
+		app.get('/success', routes.success);
 		http.createServer( app ).listen( app.get( 'port' ), function(){
 			console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
 		});
