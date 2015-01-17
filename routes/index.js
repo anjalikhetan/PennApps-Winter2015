@@ -64,7 +64,7 @@ exports.createAccount = function(req, res) {
 					console.log(err);
 					console.log("i'm putting " + userID + " " + JSON.stringify(json));
 				});
-				res.render('venmoVerify');
+				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
 			} else {
 				res.render('signup', {message: "Passwords do not match. Please try again."});
 			}

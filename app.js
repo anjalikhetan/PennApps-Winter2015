@@ -30,7 +30,6 @@ users.init(function() {
 		app.get( '/', routes.signup);
 		app.get('/signin', routes.signin);
 		app.post('/createAccount', routes.createAccount);
-		app.get('/venmoverify', routes.venmoVerify);
 		app.post('/validate', routes.validate);
 		app.get('/home', routes.home);
 		app.get('/success', routes.success);
