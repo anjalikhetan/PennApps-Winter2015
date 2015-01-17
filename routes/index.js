@@ -26,7 +26,7 @@ exports.createAccount = function(req, res) {
 	users.exists(userID, function(err, data) {
 
 		if (data) {
-			res.render('signup', {message: "Username exists, choose another"});
+			res.render('signup', {message: "Username already exists, please choose another."});
 		} else {
 			console.log("This phone number is new to the table.");
 			var json = {phoneNumber: userID};
@@ -41,4 +41,9 @@ exports.createAccount = function(req, res) {
 		}
 
 	});
+}
+
+
+exports.venmoVerify = function(req, res) {
+	res.render('venmoVerify');
 }
