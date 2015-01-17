@@ -68,7 +68,7 @@ exports.createAccount = function(req, res) {
 					console.log("i'm putting " + userID + " " + JSON.stringify(json));
 				});
 				req.session.number = req.body.inputPhoneNumber;
-				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
+				res.redirect('joinHouse');
 			} else {
 				res.render('signup', {message: "Passwords do not match. Please try again."});
 			}
@@ -82,24 +82,33 @@ exports.home = function(req, res) {
 }
 
 exports.success = function(req, res) {
-	console.log("req.query.code = " + req.query.code);
-	request.post({
-		url: "https://api.venmo.com/v1/oauth/access_token", 
-		form: {"client_id": venmoCredentials.ID,
-	   		   "client_secret": venmoCredentials.Secret,
-	    	   "code": req.query.code
-			  }
-	}, function (error, response, body) {
-  		console.log("response.statusCode = " + response.statusCode);
-  		if (!error && response.statusCode == 200) {
-   			 console.log(body) // Print the google web page.
-	    }
-	});
-	res.redirect('joinHouse', {message: null});
+	if (req.session.venmoCheck === undefined) {
+		res.redirect('/');
+	} else {
+		console.log("req.query.code = " + req.query.code);
+		request.post({
+			url: "https://api.venmo.com/v1/oauth/access_token", 
+			form: {"client_id": venmoCredentials.ID,
+		   		   "client_secret": venmoCredentials.Secret,
+		    	   "code": req.query.code
+				  }
+		}, function (error, response, body) {
+	  		console.log("response.statusCode = " + response.statusCode);
+	  		if (!error && response.statusCode == 200) {
+	   			 console.log(body);
+		    }
+		});
+		res.redirect('home');
+	}
 }
 
 exports.joinHouse = function(req, res) {
-	res.render('joinHouse', {message: null});
+	console.log(req.session.number);
+ 	if (req.session.number === undefined) {
+	 	res.redirect('/');
+	} else {
+		res.render('joinHouse', {message: null});
+	}	
 }
 
 exports.joinExisting = function(req, res) {
@@ -108,31 +117,36 @@ exports.joinExisting = function(req, res) {
 			res.render('joinHouse', {message: "The house name you entered does not exist. Please try again or create a new house."});
 		} else {
 			houses.get(req.body.existingHouse, function(err,value) {
-
-				res.redirect('home');
+				JSONvalue = JSON.parse(value);
+				JSONvalue.members.push(req.session.number);
+				req.session.venmoCheck = true;
+				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
+				houses.put(req.body.existingHouse, JSON.stringify(JSONvalue), "0", function(err,data){
+					console.log(err);
+				});
 			});
 		}
 	});
 }
 
 exports.newHouse = function(req, res) {
-	houses.exists(req.body.newHouse, function(err,data) {
-		if (!data) {
+	houses.exists(req.body.houseName, function(err,data) {
+		if (data) {
 			res.render('joinHouse', {message: "The house name you entered already exists. Please create a new name or join that house."});
 		} else {
-			var json = {housename: req.body.newName,
+			var json = {housename: req.body.houseName,
 						address: req.body.address,
 						captainNumber: req.session.number,
-						members: req.session.number};
-
-			houses.put(req.body.newHouse, JSON.stringify(json), "0", function(err,value) {
-				
-				res.redirect('home');
+						members: [req.session.number],
+						supplies: []};
+						console.log(req.session.number + "this is number");
+			houses.put(req.body.houseName, JSON.stringify(json), "0", function(err,value) {	
+				console.log(err);
+				req.session.venmoCheck = true;			
+				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
 			});
 		}
 	});
-	//do this after the new house is successfully created in the table
-	res.render('home');
 }
 exports.addSupplies = function(req, res) {
 
