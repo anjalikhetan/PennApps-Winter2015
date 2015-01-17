@@ -33,6 +33,7 @@ exports.validate = function(req, res) {
 			users.get(userID, function(err, value) {
 				var jsonvalue = JSON.parse(value);
 				if (jsonvalue.password === sha1(req.body.password)) {
+					req.session.house = jsonvalue.house;
 					req.session.number = req.body.inputPhoneNumber;
 					res.redirect('home');
 				} else {
@@ -60,7 +61,8 @@ exports.createAccount = function(req, res) {
 
 				//The passwords do match
 				var json = {phoneNumber: userID, 
-						password: sha1(req.body.password1)};
+						password: sha1(req.body.password1),
+						house: null};
 				 /*Need to update the value object*/
 
 				users.put(userID, JSON.stringify(json), "0", function(err, data) {
@@ -78,7 +80,17 @@ exports.createAccount = function(req, res) {
 }
 
 exports.home = function(req, res) {
-	res.render('home');
+	if (req.session.number === undefined) {
+		res.redirect('/');
+	} else {
+
+		houses.get(req.session.house, function(err, value) {
+			var JSONvalue = JSON.parse(value);
+		
+			res.render('home',{name: JSONvalue.housename,
+						       supplies: JSONvalue.supplies});
+		});
+	}
 }
 
 exports.success = function(req, res) {
@@ -117,13 +129,21 @@ exports.joinExisting = function(req, res) {
 			res.render('joinHouse', {message: "The house name you entered does not exist. Please try again or create a new house."});
 		} else {
 			houses.get(req.body.existingHouse, function(err,value) {
-				JSONvalue = JSON.parse(value);
+				var JSONvalue = JSON.parse(value);
 				JSONvalue.members.push(req.session.number);
+				req.session.house = req.body.existingHouse;
 				req.session.venmoCheck = true;
-				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
+				users.get(req.session.number, function(err,val) {
+					var JSONval = JSON.parse(val);
+					JSONval.house = req.body.existingHouse;
+					users.put(req.session.number, JSON.stringify(JSONval), "0", function(err,data) {
+						console.log(err);
+					});
+				});
 				houses.put(req.body.existingHouse, JSON.stringify(JSONvalue), "0", function(err,data){
 					console.log(err);
 				});
+				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
 			});
 		}
 	});
@@ -140,8 +160,19 @@ exports.newHouse = function(req, res) {
 						members: [req.session.number],
 						supplies: []};
 						console.log(req.session.number + "this is number");
+			users.get(req.session.number, function(err,val) {
+				var JSONval = JSON.parse(val);
+				console.log(req.body.houseName);
+				console.log(JSONval.house);
+				JSONval.house = req.body.houseName;
+				console.log('after' + " " + JSONval.house);
+				users.put(req.session.number, JSON.stringify(JSONval), "0", function(err,data) {
+					console.log(err);
+				});
+			});
 			houses.put(req.body.houseName, JSON.stringify(json), "0", function(err,value) {	
 				console.log(err);
+				req.session.house = req.body.houseName;
 				req.session.venmoCheck = true;			
 				res.redirect("https://api.venmo.com/v1/oauth/authorize?client_id=2258&scope=make_payments%20access_profile&response_type=code");
 			});
@@ -149,7 +180,16 @@ exports.newHouse = function(req, res) {
 	});
 }
 exports.addSupplies = function(req, res) {
-
+	houses.get(req.session.house, function(err, value) {
+		var JSONvalue = JSON.parse(value);
+		JSONvalue.supplies.push(req.body.newSupply);
+		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data){
+			console.log(err);
+			res.render('home',{name: JSONvalue.housename,
+						       supplies: JSONvalue.supplies});
+		});	
+	});
+	
 }
 
 exports.checkoff = function(req, res) {
