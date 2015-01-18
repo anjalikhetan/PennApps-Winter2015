@@ -19,13 +19,20 @@
 
         <div class="col-md-6"> <!--LEFT PANEL-->
           <h4> Our house currently needs the following supplies:</h4>
-            <form action="/checkoff" method = "POST">
+            <form action="/charge" method = "POST">
              <% for (var i = 0; i < supplies.length; i++) { %>
                 <input type="checkbox" name="supply" value= "<%= supplies[i]%>"> 
                 <%=supplies[i] %>
                     </br>
              <% } %>
-      </form>
+             <div id="how-much" style="display:none;">
+              <div class="form-group"> 
+                <label id="label-how-much" for="charge" class="control-label"></label>
+                  <input type="text" name="charge" class="form-control" id="charge" placeholder="E.g. 5.00">
+              </div>
+              <button type="submit" class="btn btn-default">Charge</button>
+            </div>
+            </form>
         </div>
 
 
@@ -53,15 +60,7 @@
 
     
     
-    <div id="how-much" class="container" style="display:none;">
-      <form class="form-horizontal" action="/charge" method = "POST">
-      <div class="form-group"> 
-        <label id="label-how-much" for="charge" class="control-label"></label>
-          <input type="text" name="charge" class="form-control" id="charge" placeholder="E.g. 5.00">
-       </div>
-        <button type="submit" class="btn btn-default">Charge</button>
-      </form>
-    </div>
+
      
 
    

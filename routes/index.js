@@ -216,24 +216,24 @@ exports.charge = function(req, res) {
 				var index = JSONval.supplies.indexOf(arr[i]);
 				JSONval.supplies.splice(index, 1);
 			}
+			console.log("note = " + note);
+			console.log("req.body.supply = " + req.body.supply);
 
-			houses.put(req.session.house, JSON.stringify(JSONval), "0", function(err,data) {
-				res.render('supplies', {name: JSONval.housename,
-						    			supplies: JSONval.supplies});
-			});
 
 			users.get(req.session.number, function(err,value) {
 				var JSONvalue = JSON.parse(value);
+				console.log("note = " + note);
 				for (var i = 0; i < JSONval.members.length; i++) {
-					if (JSONval.members[i] === req.session.number) {
-						continue;
-					}
+					console.log("JSONval.members.length = " + JSONval.members.length);
+					if (JSONval.members[i] != req.session.number) {
+						console.log("dont charge yourself");
+						
 					request.post({
 						url: "https://api.venmo.com/v1/payments", 
 						form: {"access_token": JSONvalue.token, //value is the users token
 					   		   "phone": JSONval.members[i],
 					    	   "note": note,
-					    	   "amount": Number(req.body.charge)
+					    	   "amount": (Number(req.body.charge) / JSONval.members.length) * -1
 					    	}
 					}, function (error, response, body) {
 						console.log(error);
@@ -244,12 +244,18 @@ exports.charge = function(req, res) {
 				   			 console.log(body);
 					    }
 					});
+					}
 				} //ends the for loop
 						
 			});
+
+			houses.put(req.session.house, JSON.stringify(JSONval), "0", function(err,data) {
+				res.render('supplies', {name: JSONval.housename,
+						    			supplies: JSONval.supplies});
+			});
 	});
 
-	res.redirect('supplies');
+	//res.redirect('supplies');
 }
 
 exports.supplies = function(req, res) {
