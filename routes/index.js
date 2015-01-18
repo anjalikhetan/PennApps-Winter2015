@@ -237,8 +237,8 @@ exports.charge = function(req, res) {
 	users.get(req.session.number, function(err,value) {
 		var JSONvalue = JSON.parse(value);
 		console.log(JSONvalue);
-		houses.get()
-		request.post({
+		houses.get(req.session.house, function(err, val) {	
+			request.post({
 				url: "https://api.venmo.com/v1/payments", 
 				form: {"access_token": JSONvalue.token,
 			   		   "phone": "hi" ,
@@ -255,6 +255,7 @@ exports.charge = function(req, res) {
 			    }
 			});
 		res.redirect('home');
+		});
 	});
 }
 
