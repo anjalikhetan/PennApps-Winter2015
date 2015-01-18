@@ -17,7 +17,7 @@
                 <td>
                 <%=supplies[i] %>
                 </td>
-                <td> <form action="/checkoff" method = "POST"><input type="submit" name="item" value= <%=supplies[i] %>></form>
+                <td> <form action="/checkoff" method = "POST"><input type="submit" name="item" value=<%=supplies[i] %>></form>
                 </td>
               </tr>
        <% } %>
@@ -37,7 +37,19 @@
         </div>
       </div>
     </form>
-
+    <form class="form-horizontal" action="/charge" method = "POST">
+      <div>
+        <label for="inputPhoneNumber" class="col-sm-2 control-label">Phone Number</label>
+        <div>
+          <input type="text" name="charge" class="form-control" id="charge" placeholder="E.g. $5.00">
+        </div>
+       </div>
+        <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default">Charge</button>
+        </div>
+      </div>
+    </form>
     </center>
 
     <!-- Le javascript

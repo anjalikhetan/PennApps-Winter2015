@@ -62,7 +62,8 @@ exports.createAccount = function(req, res) {
 				//The passwords do match
 				var json = {phoneNumber: userID, 
 						password: sha1(req.body.password1),
-						house: null};
+						house: null,
+						token: null};
 				 /*Need to update the value object*/
 
 				users.put(userID, JSON.stringify(json), "0", function(err, data) {
@@ -108,6 +109,14 @@ exports.success = function(req, res) {
 	  		console.log("response.statusCode = " + response.statusCode);
 	  		if (!error && response.statusCode == 200) {
 	   			 console.log(body);
+	   			 users.get(req.session.number, function(err,value) {
+	   			 	var JSONvalue = JSON.parse(value);
+	   			 	JSONvalue.token = JSON.parse(body).access_token;
+	   			 	users.put(req.session.number, JSON.stringify(JSONvalue), "0", function(err,data){
+
+	   			 	});
+
+	   			 });
 		    }
 		});
 		res.redirect('home');
@@ -201,5 +210,26 @@ exports.checkoff = function(req, res) {
 		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
 			res.redirect('home');
 		});	
+	});
+}
+
+exports.charge = function(req, res) {
+	users.get(req.session.number, function(err,value) {
+		var JSONvalue = JSON.parse(value);
+		request.post({
+				url: "https://api.venmo.com/v1/payments", 
+				form: {"access_token": JSONvalue.token,
+			   		   "phone": JSONvalue.phoneNumber,
+			    	   "note": "You will be charged by PennApps 2015",
+			    	   "amount": -0.01
+			    	}
+			}, function (error, response, body) {
+				console.log(error);
+		  		console.log("response.statusCode = " + response.statusCode);
+		  		if (!error && response.statusCode == 200) {
+		   			 console.log(body);
+			    }
+			});
+		res.redirect('home');
 	});
 }
