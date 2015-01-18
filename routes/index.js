@@ -194,8 +194,7 @@ exports.addSupplies = function(req, res) {
 		JSONvalue.supplies.push(req.body.newSupply);
 		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data){
 			console.log(err);
-			res.render('home',{name: JSONvalue.housename,
-						       supplies: JSONvalue.supplies});
+			res.redirect('home');
 		});	
 	});
 	

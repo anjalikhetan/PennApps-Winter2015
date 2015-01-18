@@ -1,16 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-<link href=
-    "//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../stylesheets/style.css">
-
   </head>
 
   <body>
     <center>
       <h1> Welcome to <%=name %>!</h1>
       <h2> Our house currently needs the following supplies:</h2>
+      <form>
+        First name:<br>
+        <input type="text" name="firstname">
+        <br>
+        Last name:<br>
+        <input type="text" name="lastname">
+      </form>
+
+
+
       <table>
         <% for (var i = 0; i < supplies.length; i++) { %>
               <tr>
