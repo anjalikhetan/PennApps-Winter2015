@@ -41,6 +41,7 @@ users.init(function() {
 			app.post('/joinExisting', routes.joinExisting);
 			app.post('/newHouse', routes.newHouse);
 			app.post('/charge', routes.charge);
+			app.get('/supplies', routes.supplies);
 			http.createServer( app ).listen( app.get( 'port' ), function(){
 				console.log( 'Open browser to http://localhost:' + app.get( 'port' ));
 			});

@@ -225,12 +225,13 @@ exports.charge = function(req, res) {
 	users.get(req.session.number, function(err,value) {
 		var JSONvalue = JSON.parse(value);
 		console.log(JSONvalue);
+		houses.get()
 		request.post({
 				url: "https://api.venmo.com/v1/payments", 
 				form: {"access_token": JSONvalue.token,
-			   		   "phone": 2035549697,
-			    	   "note": "You will be charged by PennApps 2015",
-			    	   "amount": -0.01
+			   		   "phone": "hi" ,
+			    	   "note": req.session.number + " bought " + req.body.supply,
+			    	   "amount": Number(req.body.amount)
 			    	}
 			}, function (error, response, body) {
 				console.log(error);
@@ -243,4 +244,8 @@ exports.charge = function(req, res) {
 			});
 		res.redirect('home');
 	});
+}
+
+exports.supplies = function(req, res) {
+	res.render('supplies');
 }
