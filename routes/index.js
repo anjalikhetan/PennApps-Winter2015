@@ -215,6 +215,7 @@ exports.checkoff = function(req, res) {
 exports.charge = function(req, res) {
 	users.get(req.session.number, function(err,value) {
 		var JSONvalue = JSON.parse(value);
+		console.log(JSONvalue);
 		request.post({
 				url: "https://api.venmo.com/v1/payments", 
 				form: {"access_token": JSONvalue.token,
@@ -225,6 +226,8 @@ exports.charge = function(req, res) {
 			}, function (error, response, body) {
 				console.log(error);
 		  		console.log("response.statusCode = " + response.statusCode);
+		  		console.log(response);
+		  		console.log(body);
 		  		if (!error && response.statusCode == 200) {
 		   			 console.log(body);
 			    }
