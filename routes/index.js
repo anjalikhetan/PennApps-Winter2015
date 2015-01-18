@@ -203,9 +203,18 @@ exports.addSupplies = function(req, res) {
 exports.checkoff = function(req, res) {
 	houses.get(req.session.house, function(err, value) {
 		var JSONvalue = JSON.parse(value);
-		console.log(req.body.item);
-		var index = JSONvalue.supplies.indexOf(req.body.item);
-		JSONvalue.supplies.splice(index,1);
+		console.log(req.body);
+		console.log("req.body.supply.length = " + req.body.supply.length);
+		var arr = [].concat(req.body.supply);
+		console.log("arr.length = " + arr.length);
+
+
+
+		for (var i = 0; i < arr.length; i++) {
+			var index = JSONvalue.supplies.indexOf(arr[i]);
+			JSONvalue.supplies.splice(index,1);
+		}
+
 		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
 			res.redirect('home');
 		});	

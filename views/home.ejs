@@ -9,27 +9,15 @@
     <center>
       <h1> Welcome to <%=name %>!</h1>
       <h2> Our house currently needs the following supplies:</h2>
-      <form>
-        First name:<br>
-        <input type="text" name="firstname">
-        <br>
-        Last name:<br>
-        <input type="text" name="lastname">
+      <form action="/checkoff" method = "POST">
+         <% for (var i = 0; i < supplies.length; i++) { %>
+            <input type="checkbox" name="supply" value= <%= String(supplies[i])%>> 
+            <%=supplies[i] %>
+                </br>
+         <% } %>
+         <input type="submit" class="btn btn-default">
+         <!--action="/checkoff" method = "POST"><input type="submit" name="item" value=<%=supplies[i] %>-->
       </form>
-
-
-
-      <table>
-        <% for (var i = 0; i < supplies.length; i++) { %>
-              <tr>
-                <td>
-                <%=supplies[i] %>
-                </td>
-                <td> <form action="/checkoff" method = "POST"><input type="submit" name="item" value=<%=supplies[i] %>></form>
-                </td>
-              </tr>
-       <% } %>
-      </table>
 
       <h2> Add something in the box to request supplies </h2>
       <form class="form-horizontal" action="/addSupplies" method = "POST">
