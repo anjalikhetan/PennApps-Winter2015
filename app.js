@@ -37,7 +37,6 @@ users.init(function() {
 			app.get('/success', routes.success);
 			app.get('/joinHouse', routes.joinHouse);
 			app.post('/addSupplies', routes.addSupplies);
-			app.post('/checkoff', routes.checkoff);
 			app.post('/joinExisting', routes.joinExisting);
 			app.post('/newHouse', routes.newHouse);
 			app.post('/charge', routes.charge);

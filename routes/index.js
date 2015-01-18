@@ -200,18 +200,12 @@ exports.addSupplies = function(req, res) {
 	
 }
 
-exports.checkoff = function(req, res) {
-	var note = "";
-	houses.get(req.session.house, function(err, value) {
-		var JSONvalue = JSON.parse(value);
-		if (req.body.supply === undefined) {
-			res.render('supplies', {name: JSONvalue.housename,
-						    		supplies: JSONvalue.supplies,
-						    		memo: null});
-		} else {
-			var arr = [].concat(req.body.supply);
-			console.log("arr.length = " + arr.length);
-			
+
+exports.charge = function(req, res) {
+	houses.get(req.session.house, function(err, val) {
+		var JSONval = JSON.parse(val);
+		var note = "";
+		var arr = [].concat(req.body.supply);			
 			//iterate through completed supplies
 			for (var i = 0; i < arr.length; i++) {
 				if (arr.length - i > 1) {
@@ -219,51 +213,50 @@ exports.checkoff = function(req, res) {
 				} else {
 					note += arr[i];
 				}
-				var index = JSONvalue.supplies.indexOf(arr[i]);
-				JSONvalue.supplies.splice(index,1);
+				var index = JSONval.supplies.indexOf(arr[i]);
+				JSONval.supplies.splice(index, 1);
 			}
 
-
-			houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
-				res.render('supplies', {name: JSONvalue.housename,
-						    			supplies: JSONvalue.supplies, 
-						    			memo: note});
-			});	
-		}
-	});
-}
-
-exports.charge = function(req, res) {
-	users.get(req.session.number, function(err,value) {
-		var JSONvalue = JSON.parse(value);
-		console.log(JSONvalue);
-		houses.get()
-		request.post({
-				url: "https://api.venmo.com/v1/payments", 
-				form: {"access_token": JSONvalue.token,
-			   		   "phone": "hi" ,
-			    	   "note": req.session.number + " bought " + req.body.supply,
-			    	   "amount": Number(req.body.amount)
-			    	}
-			}, function (error, response, body) {
-				console.log(error);
-		  		console.log("response.statusCode = " + response.statusCode);
-		  		console.log(response);
-		  		console.log(body);
-		  		if (!error && response.statusCode == 200) {
-		   			 console.log(body);
-			    }
+			houses.put(req.session.house, JSON.stringify(JSONval), "0", function(err,data) {
+				res.render('supplies', {name: JSONval.housename,
+						    			supplies: JSONval.supplies});
 			});
-		res.redirect('home');
+
+			users.get(req.session.number, function(err,value) {
+				var JSONvalue = JSON.parse(value);
+				for (var i = 0; i < JSONval.members.length; i++) {
+					if (JSONval.members[i] === req.session.number) {
+						continue;
+					}
+					request.post({
+						url: "https://api.venmo.com/v1/payments", 
+						form: {"access_token": JSONvalue.token, //value is the users token
+					   		   "phone": JSONval.members[i],
+					    	   "note": note,
+					    	   "amount": Number(req.body.charge)
+					    	}
+					}, function (error, response, body) {
+						console.log(error);
+				  		console.log("response.statusCode = " + response.statusCode);
+				  		console.log(response);
+				  		console.log(body);
+				  		if (!error && response.statusCode == 200) {
+				   			 console.log(body);
+					    }
+					});
+				} //ends the for loop
+						
+			});
 	});
+
+	res.redirect('supplies');
 }
 
 exports.supplies = function(req, res) {
 	houses.get(req.session.house, function(err, value) {
 		var JSONvalue = JSON.parse(value);
 		res.render('supplies', {name: JSONvalue.housename,
-						    supplies: JSONvalue.supplies, 
-							memo: null});
+						    supplies: JSONvalue.supplies});
 	});
 	
 }

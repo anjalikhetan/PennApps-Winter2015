@@ -25,14 +25,6 @@
                 <%=supplies[i] %>
                     </br>
              <% } %>
-         <input type="submit" class="btn btn-default">
-  
-         
-
-        <button type="button" class="btn btn-default" data-container="body" data-toggle="popover"        data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
-                  Real Submit
-        </button>
-
       </form>
         </div>
 
@@ -60,18 +52,17 @@
     </center>
 
     
-    <% if (memo) { %>
-      <div class="container">
-        <form class="form-horizontal" action="/charge" method = "POST">
-        <div class="form-group"> 
-          <label for="charge" class="control-label">How much did that <%=memo%> cost?</label>
-            <input type="text" name="charge" class="form-control" id="charge" placeholder="E.g. $5.00">
-         </div>
-          <button type="submit" class="btn btn-default">Charge</button>
-        </form>
-      </div>
+    
+    <div id="how-much" class="container" style="display:none;">
+      <form class="form-horizontal" action="/charge" method = "POST">
+      <div class="form-group"> 
+        <label id="label-how-much" for="charge" class="control-label"></label>
+          <input type="text" name="charge" class="form-control" id="charge" placeholder="E.g. 5.00">
+       </div>
+        <button type="submit" class="btn btn-default">Charge</button>
+      </form>
+    </div>
      
-    <% } %>
 
    
     </div>
@@ -82,6 +73,32 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
+    <script>
+    var words = [];
+    $(document).ready(function() {
+      $( "[type=checkbox]" ).click(function() {
+        if ($(this).is(':checked')) {
+          words.push($(this).prop('value'));
+        } else {
+          var index = words.indexOf($(this).prop('value'));
+          words.splice(index, 1);
+        }
+        if (words.length === 0) {
+            $('#how-much').hide();
+        } else {
+            $('#how-much').show();
+            var html = "How much did the ";
+            for (var i = 0; i < words.length; i++) {
+              html += words[i];
+              if (i != words.length - 1) {
+                html += ", ";
+              }
+            }
+            html += " cost?";
+            $('#label-how-much').html(html);
+        }
+      });
+    });
+    </script>
   </body>
 </html>
