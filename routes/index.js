@@ -194,30 +194,42 @@ exports.addSupplies = function(req, res) {
 		JSONvalue.supplies.push(req.body.newSupply);
 		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data){
 			console.log(err);
-			res.redirect('home');
+			res.redirect('supplies');
 		});	
 	});
 	
 }
 
 exports.checkoff = function(req, res) {
+	var note = "";
 	houses.get(req.session.house, function(err, value) {
 		var JSONvalue = JSON.parse(value);
-		console.log(req.body);
-		console.log("req.body.supply.length = " + req.body.supply.length);
-		var arr = [].concat(req.body.supply);
-		console.log("arr.length = " + arr.length);
+		if (req.body.supply === undefined) {
+			res.render('supplies', {name: JSONvalue.housename,
+						    		supplies: JSONvalue.supplies,
+						    		memo: null});
+		} else {
+			var arr = [].concat(req.body.supply);
+			console.log("arr.length = " + arr.length);
+			
+			//iterate through completed supplies
+			for (var i = 0; i < arr.length; i++) {
+				if (arr.length - i > 1) {
+					note += arr[i] + ", ";
+				} else {
+					note += arr[i];
+				}
+				var index = JSONvalue.supplies.indexOf(arr[i]);
+				JSONvalue.supplies.splice(index,1);
+			}
 
 
-
-		for (var i = 0; i < arr.length; i++) {
-			var index = JSONvalue.supplies.indexOf(arr[i]);
-			JSONvalue.supplies.splice(index,1);
+			houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
+				res.render('supplies', {name: JSONvalue.housename,
+						    			supplies: JSONvalue.supplies, 
+						    			memo: note});
+			});	
 		}
-
-		houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
-			res.redirect('home');
-		});	
 	});
 }
 
@@ -247,5 +259,11 @@ exports.charge = function(req, res) {
 }
 
 exports.supplies = function(req, res) {
-	res.render('supplies');
+	houses.get(req.session.house, function(err, value) {
+		var JSONvalue = JSON.parse(value);
+		res.render('supplies', {name: JSONvalue.housename,
+						    supplies: JSONvalue.supplies, 
+							memo: null});
+	});
+	
 }
