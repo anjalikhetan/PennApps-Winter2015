@@ -222,6 +222,7 @@ exports.charge = function(req, res) {
 						    			supplies: JSONval.supplies});
 			});
 
+<<<<<<< HEAD
 			users.get(req.session.number, function(err,value) {
 				var JSONvalue = JSON.parse(value);
 				for (var i = 0; i < JSONval.members.length; i++) {
@@ -247,6 +248,40 @@ exports.charge = function(req, res) {
 				} //ends the for loop
 						
 			});
+=======
+			houses.put(req.session.house, JSON.stringify(JSONvalue), "0", function(err,data) {
+				res.render('supplies', {name: JSONvalue.housename,
+						    			supplies: JSONvalue.supplies, 
+						    			memo: note});
+			});	
+		}
+	});
+}
+
+exports.charge = function(req, res) {
+	users.get(req.session.number, function(err,value) {
+		var JSONvalue = JSON.parse(value);
+		console.log(JSONvalue);
+		houses.get(req.session.house, function(err, val) {	
+			request.post({
+				url: "https://api.venmo.com/v1/payments", 
+				form: {"access_token": JSONvalue.token,
+			   		   "phone": "hi" ,
+			    	   "note": req.session.number + " bought " + req.body.supply,
+			    	   "amount": Number(req.body.amount)
+			    	}
+			}, function (error, response, body) {
+				console.log(error);
+		  		console.log("response.statusCode = " + response.statusCode);
+		  		console.log(response);
+		  		console.log(body);
+		  		if (!error && response.statusCode == 200) {
+		   			 console.log(body);
+			    }
+			});
+		res.redirect('home');
+		});
+>>>>>>> FETCH_HEAD
 	});
 
 	res.redirect('supplies');
