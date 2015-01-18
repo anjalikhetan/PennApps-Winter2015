@@ -228,7 +228,7 @@ exports.charge = function(req, res) {
 		request.post({
 				url: "https://api.venmo.com/v1/payments", 
 				form: {"access_token": JSONvalue.token,
-			   		   "phone": JSONvalue.phoneNumber,
+			   		   "phone": 2035549697,
 			    	   "note": "You will be charged by PennApps 2015",
 			    	   "amount": -0.01
 			    	}
